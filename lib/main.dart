@@ -3,6 +3,7 @@ import 'package:myfti/models/article_model.dart';
 import 'package:myfti/models/schedule_class_model.dart';
 import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/article_card_widget.dart';
+import 'package:myfti/ui/class_card_widget.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
@@ -122,7 +123,11 @@ class _SampleUIWidgets extends State<SampleUIWidgets> {
                       time: "08:00 - 10:00",
                       id: "1",
                       subject: "Pengabdian Masyarakat"),
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const ClassCardWidget()
               ],
             ),
           ),
@@ -131,3 +136,38 @@ class _SampleUIWidgets extends State<SampleUIWidgets> {
     );
   }
 }
+
+// class _SampleUIWidgets extends State<SampleUIWidgets> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         appBar: AppBar(
+//           elevation: 0.0,
+//           title: const Text(
+//             'Sample Unit UI',
+//             style: TextStyle(
+//               color: Colors.white,
+//             ),
+//           ),
+//           backgroundColor: primaryColor,
+//         ),
+//         body: GridView(
+//           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//               crossAxisCount: 2, crossAxisSpacing: 3),
+//           children: const [
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget(),
+//             ClassCardWidget()
+//           ],
+//         ));
+//   }
+// }
