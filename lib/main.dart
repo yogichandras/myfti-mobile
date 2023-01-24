@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:myfti/models/article_model.dart';
 import 'package:myfti/models/schedule_class_model.dart';
+import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/article_card_widget.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
 import 'package:myfti/ui/schedule_class_card_widget.dart';
 import 'package:myfti/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => AuthProvider()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -44,7 +51,7 @@ class _SampleUIWidgets extends State<SampleUIWidgets> {
       appBar: AppBar(
         elevation: 0.0,
         title: const Text(
-          'Test Unit UI',
+          'Sample Unit UI',
           style: TextStyle(
             color: Colors.white,
           ),
@@ -54,8 +61,7 @@ class _SampleUIWidgets extends State<SampleUIWidgets> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 100.0, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
