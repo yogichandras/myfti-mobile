@@ -18,7 +18,7 @@ class ArticleCardWidget extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(article.foto!),
+                image: AssetImage(article.coverUrl!),
                 fit: BoxFit.cover,
                 colorFilter: const ColorFilter.mode(
                   Colors.black26,
@@ -53,7 +53,7 @@ class ArticleCardWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          '${article.tempat}, ${article.date}',
+          '${article.place}, ${article.date}',
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w400,
