@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myfti/models/article_model.dart';
+import 'package:myfti/models/profile_model.dart';
 import 'package:myfti/models/schedule_class_model.dart';
 import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/article_card_widget.dart';
@@ -7,6 +8,7 @@ import 'package:myfti/ui/class_card_widget.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
+import 'package:myfti/ui/profile_information_widget.dart';
 import 'package:myfti/ui/schedule_class_card_widget.dart';
 import 'package:myfti/utils/colors.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +68,16 @@ class _SampleUIWidgets extends State<SampleUIWidgets> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                ProfileInformationWidget(
+                  profile: ProfileModel(
+                    name: "Muhammad Fajar",
+                    semester: "3",
+                    major: "Teknik Informatika",
+                    imageUrl: "assets/images/rizky.png",
+                    bio:
+                        "HI, IM RIZKY ARDIANSYAH I’M A STUDENT OF UNIBI ON 5TH SEMESTER I LIKE PHOTOGRAPHY, CODING AND DESIGN",
+                  ),
+                ),
                 Form(
                   key: _formKey,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
