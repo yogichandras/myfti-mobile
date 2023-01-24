@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myfti/models/article_model.dart';
+import 'package:myfti/models/schedule_class_model.dart';
 import 'package:myfti/ui/article_card_widget.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
@@ -94,21 +96,27 @@ class _SampleUIWidgets extends State<SampleUIWidgets> {
                 const SizedBox(
                   height: 20,
                 ),
-                const ArticleCardWidget(
+                ArticleCardWidget(
+                    article: ArticleModel(
                   category: "Pengabdian",
                   date: "12/12/2020",
                   description:
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc.",
-                  imageUrl: "assets/images/unibi-cover.png",
+                  coverUrl: "assets/images/unibi-cover.png",
+                  id: "1",
                   place: "Bandung",
-                ),
+                )),
                 const SizedBox(
                   height: 20,
                 ),
-                const ScheduleClassCardWidget(
-                    lecturer: "GRAHA PRAKASA",
-                    room: "B2231",
-                    time: "08:00 - 10:00")
+                ScheduleClassCardWidget(
+                  item: ScheduleClassModel(
+                      lecturer: "GRAHA PRAKASA",
+                      room: "B2231",
+                      time: "08:00 - 10:00",
+                      id: "1",
+                      subject: "Pengabdian Masyarakat"),
+                )
               ],
             ),
           ),

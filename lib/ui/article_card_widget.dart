@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:myfti/models/article_model.dart';
 import 'package:myfti/utils/colors.dart';
 
 class ArticleCardWidget extends StatelessWidget {
-  final String imageUrl;
-  final String description;
-  final String category;
-  final String place;
-  final String date;
+  final ArticleModel article;
 
-  const ArticleCardWidget(
-      {super.key,
-      required this.imageUrl,
-      required this.description,
-      required this.category,
-      required this.place,
-      required this.date});
+  const ArticleCardWidget({
+    super.key,
+    required this.article,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +18,7 @@ class ArticleCardWidget extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(imageUrl),
+                image: AssetImage(article.foto!),
                 fit: BoxFit.cover,
                 colorFilter: const ColorFilter.mode(
                   Colors.black26,
@@ -46,7 +40,7 @@ class ArticleCardWidget extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    category,
+                    article.category!,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -59,7 +53,7 @@ class ArticleCardWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          '$place, $date',
+          '${article.tempat}, ${article.date}',
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w400,
@@ -67,7 +61,7 @@ class ArticleCardWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          description,
+          article.description!,
           style: const TextStyle(
             fontSize: 15,
           ),

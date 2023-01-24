@@ -1,17 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:myfti/models/schedule_class_model.dart';
 
 class ScheduleClassCardWidget extends StatelessWidget {
-  final String lecturer;
-  final String room;
-  final String time;
+  final ScheduleClassModel item;
 
-  const ScheduleClassCardWidget(
-      {super.key,
-      required this.lecturer,
-      required this.room,
-      required this.time});
+  const ScheduleClassCardWidget({super.key, required this.item});
 
   get _getRandomCardColor {
     final colors = [
@@ -47,7 +42,7 @@ class ScheduleClassCardWidget extends StatelessWidget {
               ),
             ),
             Text(
-              lecturer,
+              item.lecturer!,
               style: const TextStyle(
                 fontSize: 16,
               ),
@@ -61,7 +56,21 @@ class ScheduleClassCardWidget extends StatelessWidget {
               ),
             ),
             Text(
-              room,
+              item.room!,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Mata Kuliah',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              item.subject!,
               style: const TextStyle(
                 fontSize: 16,
               ),
@@ -75,7 +84,7 @@ class ScheduleClassCardWidget extends StatelessWidget {
               ),
             ),
             Text(
-              time,
+              item.time!,
               style: const TextStyle(
                 fontSize: 16,
               ),
