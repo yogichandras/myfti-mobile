@@ -2,7 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:myfti/utils/colors.dart';
 
 class ArticleCardWidget extends StatelessWidget {
-  const ArticleCardWidget({super.key});
+  final String imageUrl;
+  final String description;
+  final String category;
+  final String place;
+  final String date;
+
+  const ArticleCardWidget(
+      {super.key,
+      required this.imageUrl,
+      required this.description,
+      required this.category,
+      required this.place,
+      required this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -10,11 +22,11 @@ class ArticleCardWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/unibi-cover.png'),
+                image: AssetImage(imageUrl),
                 fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
+                colorFilter: const ColorFilter.mode(
                   Colors.black26,
                   BlendMode.darken,
                 )),
@@ -30,11 +42,12 @@ class ArticleCardWidget extends StatelessWidget {
                   color: primaryColor,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Pengabdian',
-                    style: TextStyle(
+                    category,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                     ),
@@ -45,17 +58,17 @@ class ArticleCardWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        const Text(
-          'Bandung, 15 Januari 2022',
-          style: TextStyle(
+        Text(
+          '$place, $date',
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),
         ),
         const SizedBox(height: 10),
-        const Text(
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies tincidunt, nunc nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Donec auctor, nisl eget ultricies tincidunt, nunc nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.',
-          style: TextStyle(
+        Text(
+          description,
+          style: const TextStyle(
             fontSize: 15,
           ),
           textAlign: TextAlign.justify,
