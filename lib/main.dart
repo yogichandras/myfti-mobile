@@ -3,6 +3,7 @@ import 'package:myfti/ui/article_card_widget.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
+import 'package:myfti/ui/schedule_class_card_widget.dart';
 import 'package:myfti/utils/colors.dart';
 
 void main() {
@@ -19,19 +20,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Scaffold(body: TestUnitUI()),
+      home: const Scaffold(body: SampleUIWidgets()),
     );
   }
 }
 
-class TestUnitUI extends StatefulWidget {
-  const TestUnitUI({super.key});
+class SampleUIWidgets extends StatefulWidget {
+  const SampleUIWidgets({super.key});
 
   @override
-  State<TestUnitUI> createState() => _TestUnitUIState();
+  State<SampleUIWidgets> createState() => _SampleUIWidgets();
 }
 
-class _TestUnitUIState extends State<TestUnitUI> {
+class _SampleUIWidgets extends State<SampleUIWidgets> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
 
@@ -54,6 +55,7 @@ class _TestUnitUIState extends State<TestUnitUI> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 100.0, vertical: 20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Form(
                   key: _formKey,
@@ -92,7 +94,21 @@ class _TestUnitUIState extends State<TestUnitUI> {
                 const SizedBox(
                   height: 20,
                 ),
-                const ArticleCardWidget()
+                const ArticleCardWidget(
+                  category: "Pengabdian",
+                  date: "12/12/2020",
+                  description:
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc.",
+                  imageUrl: "assets/images/unibi-cover.png",
+                  place: "Bandung",
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const ScheduleClassCardWidget(
+                    lecturer: "GRAHA PRAKASA",
+                    room: "B2231",
+                    time: "08:00 - 10:00")
               ],
             ),
           ),
