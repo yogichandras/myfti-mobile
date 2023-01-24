@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:myfti/models/schedule_class_model.dart';
 
 class ClassCardWidget extends StatelessWidget {
-  const ClassCardWidget({super.key});
+  final ScheduleClassModel item;
+
+  const ClassCardWidget({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +25,15 @@ class ClassCardWidget extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Text("Kelas : B20200"),
+                  Text("Kelas : ${item.room}"),
                   const SizedBox(
                     height: 5,
                   ),
-                  const Text('METODOLOGI PENELITIAN'),
+                  Text(item.subject ?? ""),
                   const SizedBox(
                     height: 5,
                   ),
-                  const Text('GRAHA PRAKASA'),
+                  Text(item.time ?? ""),
                 ])
           ],
         ),
