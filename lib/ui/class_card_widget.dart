@@ -17,10 +17,12 @@ class ClassCardWidget extends StatelessWidget {
             Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Image.asset(
-                    'assets/images/unibi-logo.png',
-                    fit: BoxFit.contain,
-                    width: double.infinity,
+                  Center(
+                    child: Image.asset(
+                      'assets/images/unibi-logo.png',
+                      fit: BoxFit.contain,
+                      width: 50,
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
