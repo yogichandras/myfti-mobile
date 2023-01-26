@@ -18,36 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
-  BaseResponse<InformationModel>? _visi;
-  BaseResponse<InformationModel>? _misi;
-  BaseResponse<InformationModel>? _sejarah;
-  BaseResponse<List<BannerModel>>? _banners;
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() async {
-      await initializeData();
-    });
-  }
-
-  initializeData() async {
-    var informationService = InformationService();
-
-    var visi = await informationService.getVisi();
-    var misi = await informationService.getMisi();
-    var sejarah = await informationService.getSejarah();
-    var banners = await informationService.getBanners();
-
-    setState(() {
-      _visi = visi;
-      _misi = misi;
-      _sejarah = sejarah;
-      _banners = banners;
-    });
-  }
-
   List<String> mapBannerListToListString(
       BaseResponse<List<BannerModel>>? response) {
     if (response == null) {
@@ -60,14 +30,8 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   refetchData() async {
-    setState(() {
-      _visi = null;
-      _misi = null;
-      _sejarah = null;
-      _banners = null;
-    });
-
-    await initializeData();
+    // NOTES: This is just a trigger to rebuild the widget or re-fetch the data
+    setState(() {});
   }
 
   @override
@@ -100,9 +64,7 @@ class _HomeScreen extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CarouselBannerWidget(
-                images: mapBannerListToListString(_banners),
-              ),
+              _carouselBannerWidget(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
@@ -116,9 +78,15 @@ class _HomeScreen extends State<HomeScreen> {
                       crossAxisCount: 2,
                       shrinkWrap: true,
                       children: [
-                        _informationCardWidget(context, "Sejarah", _sejarah),
-                        _informationCardWidget(context, "Visi", _visi),
-                        _informationCardWidget(context, "Misi", _misi),
+                        _informationCardWidget(
+                            future: InformationService().getSejarah(),
+                            title: "Sejarah"),
+                        _informationCardWidget(
+                            future: InformationService().getVisi(),
+                            title: "Visi"),
+                        _informationCardWidget(
+                            future: InformationService().getMisi(),
+                            title: "Misi"),
                       ],
                     ),
                     Divider(
@@ -176,19 +144,40 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  Widget _informationCardWidget(BuildContext context, String title,
-      BaseResponse<InformationModel>? visi) {
-    var result = visi?.obj;
+  Widget _carouselBannerWidget() {
+    return FutureBuilder(
+        future: InformationService().getBanners(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-    if (visi?.success == false || result == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+          List<String> images = mapBannerListToListString(snapshot.data);
 
-    return InformationCardWidget(
-      paragraph: result.description ?? "",
-      title: title,
-    );
+          return CarouselBannerWidget(
+            images: images,
+          );
+        });
+  }
+
+  Widget _informationCardWidget(
+      {required Future<BaseResponse<InformationModel>>? future,
+      required String title}) {
+    return FutureBuilder(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return InformationCardWidget(
+            paragraph: snapshot.data?.obj?.description ?? "",
+            title: title,
+          );
+        });
   }
 }
