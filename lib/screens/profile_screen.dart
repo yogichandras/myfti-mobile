@@ -19,27 +19,58 @@ class _ProfileScreen extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    int widthCard = 170;
+
+    int countRow = width ~/ widthCard;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        title: const Text(
-          'Profile Screen',
-          style: TextStyle(
-            color: Colors.white,
+        centerTitle: false,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: secondaryColor,
           ),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/');
+          },
         ),
-        backgroundColor: primaryColor,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: secondaryColor,
+            ),
+            tooltip: 'Logout',
+            onPressed: () {},
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _profileInformationWidget(context),
+                Divider(
+                  color: primaryColor,
+                  thickness: 2,
+                  height: 20,
+                ),
+                Text(
+                  "Kelas Anda",
+                  style: TextStyle(fontSize: 20, color: tertiaryColor),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 GridView.count(
-                  crossAxisCount: 2,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: countRow,
                   shrinkWrap: true,
                   children: <Widget>[
                     _classCardWidget(context),

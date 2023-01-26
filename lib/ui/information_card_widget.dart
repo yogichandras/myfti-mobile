@@ -14,30 +14,29 @@ class InformationCardWidget extends StatelessWidget {
       elevation: 0,
       color: primaryColor.withOpacity(0.5),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              title: Text(title,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
                   style: const TextStyle(color: Colors.white, fontSize: 20)),
-              subtitle: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  Text(
-                    paragraph,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  )
-                ],
+              const SizedBox(
+                height: 10,
               ),
-            ),
-          ],
+              Text(
+                paragraph,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                ),
+                textAlign: TextAlign.justify,
+              )
+            ],
+          ),
         ),
       ),
     );
