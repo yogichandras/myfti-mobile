@@ -1,53 +1,41 @@
-// ignore_for_file: non_constant_identifier_names
+import 'package:json_annotation/json_annotation.dart';
 
+part 'schedule_class_model.g.dart';
+
+@JsonSerializable()
 class ScheduleClassModel {
   final String? id;
+
+  @JsonKey(name: 'dosen')
   final String? lecturer;
+
+  @JsonKey(name: 'kelas')
   final String? room;
+
+  @JsonKey(name: 'jam')
   final String? time;
+
+  @JsonKey(name: 'matkul')
   final String? subject;
 
-  ScheduleClassModel(
-      {this.id, this.lecturer, this.room, this.time, this.subject});
+  @JsonKey(name: 'start_date')
+  final String? startDate;
 
-  factory ScheduleClassModel.fromDTO(ScheduleClassDTO dto) {
-    return ScheduleClassModel(
-      id: dto.id,
-      lecturer: dto.dosen,
-      room: dto.kelas,
-      time: dto.jam,
-      subject: dto.matkul,
-    );
-  }
-}
+  @JsonKey(name: 'end_date')
+  final String? endDate;
 
-class ScheduleClassDTO {
-  final String? id;
-  final String? start_date;
-  final String? end_date;
-  final String? jam;
-  final String? kelas;
-  final String? matkul;
-  final String? dosen;
+  ScheduleClassModel({
+    this.id,
+    this.lecturer,
+    this.room,
+    this.time,
+    this.subject,
+    this.startDate,
+    this.endDate,
+  });
 
-  ScheduleClassDTO(
-      {this.id,
-      this.start_date,
-      this.end_date,
-      this.jam,
-      this.kelas,
-      this.matkul,
-      this.dosen});
+  factory ScheduleClassModel.fromJson(Map<String, dynamic> json) =>
+      _$ScheduleClassModelFromJson(json);
 
-  factory ScheduleClassDTO.fromJson(Map<String, dynamic> json) {
-    return ScheduleClassDTO(
-      id: json['id'],
-      start_date: json['start_date'],
-      end_date: json['end_date'],
-      jam: json['jam'],
-      kelas: json['kelas'],
-      matkul: json['matkul'],
-      dosen: json['dosen'],
-    );
-  }
+  Map<String, dynamic> toJson() => _$ScheduleClassModelToJson(this);
 }

@@ -21,44 +21,67 @@ class InformationCardWidget extends StatelessWidget {
         onTap: () {
           showModalBottomSheet<void>(
             context: context,
-            enableDrag: true,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(20),
               ),
             ),
-            builder: (BuildContext context) {
+            builder: (context) {
               return DraggableScrollableSheet(
                 expand: false,
+                initialChildSize: 0.32,
+                maxChildSize: 1,
+                minChildSize: 0.32,
                 builder: (context, scrollController) {
-                  return Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(title,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              paragraph,
-                              style: TextStyle(
-                                color: secondaryColor,
-                                fontSize: 16,
+                  return SingleChildScrollView(
+                    controller: scrollController,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Positioned(
+                            top: -14,
+                            child: Container(
+                              height: 8,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              textAlign: TextAlign.justify,
-                            ),
-                          ],
-                        ),
-                      ),
+                            )),
+                        Container(
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                            left: 40,
+                            right: 40,
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(title,
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                paragraph,
+                                style: TextStyle(
+                                  color: secondaryColor,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.justify,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   );
                 },
