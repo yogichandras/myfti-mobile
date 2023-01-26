@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myfti/utils/colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class InformationCardWidget extends StatelessWidget {
   final String title;
@@ -99,5 +100,89 @@ class InformationCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class SkeletonInformationCardWidget extends StatelessWidget {
+  const SkeletonInformationCardWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        elevation: 0,
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+            padding: const EdgeInsets.only(
+              bottom: 20,
+              top: 10,
+              left: 20,
+              right: 20,
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade400,
+                child: Container(
+                  width: 100,
+                  height: 10,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade400,
+                child: Container(
+                  width: 100,
+                  height: 5,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade400,
+                child: Container(
+                  width: 100,
+                  height: 5,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade400,
+                child: Container(
+                  width: 100,
+                  height: 5,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade400,
+                child: Container(
+                  width: 50,
+                  height: 5,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ])));
   }
 }

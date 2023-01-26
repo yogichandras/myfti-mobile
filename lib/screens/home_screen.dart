@@ -64,7 +64,7 @@ class _HomeScreen extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _carouselBannerWidget(),
+              carouselBannerWidget(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
@@ -78,13 +78,13 @@ class _HomeScreen extends State<HomeScreen> {
                       crossAxisCount: 2,
                       shrinkWrap: true,
                       children: [
-                        _informationCardWidget(
+                        informationCardWidget(
                             future: InformationService().getSejarah(),
                             title: "Sejarah"),
-                        _informationCardWidget(
+                        informationCardWidget(
                             future: InformationService().getVisi(),
                             title: "Visi"),
-                        _informationCardWidget(
+                        informationCardWidget(
                             future: InformationService().getMisi(),
                             title: "Misi"),
                       ],
@@ -103,37 +103,7 @@ class _HomeScreen extends State<HomeScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    FutureBuilder(
-                        future: InformationService().getArticles(),
-                        builder: ((context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          if (snapshot.hasError) {
-                            return const Center(
-                              child: Text("Terjadi kesalahan"),
-                            );
-                          }
-
-                          var articles = snapshot.data?.obj;
-
-                          return ListView.separated(
-                              physics: const NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                              itemCount: articles?.length ?? 0,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return ArticleCardWidget(
-                                    article: articles![index]);
-                              });
-                        })),
+                    articleWidgets(),
                   ],
                 ),
               )
@@ -144,13 +114,13 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  Widget _carouselBannerWidget() {
+  Widget carouselBannerWidget() {
     return FutureBuilder(
         future: InformationService().getBanners(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: SkeletonCarouselWidget(),
             );
           }
 
@@ -162,15 +132,19 @@ class _HomeScreen extends State<HomeScreen> {
         });
   }
 
-  Widget _informationCardWidget(
+  Widget informationCardWidget(
       {required Future<BaseResponse<InformationModel>>? future,
       required String title}) {
     return FutureBuilder(
         future: future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SkeletonInformationCardWidget();
+          }
+
+          if (snapshot.hasError) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Text("Terjadi kesalahan"),
             );
           }
 
@@ -179,5 +153,34 @@ class _HomeScreen extends State<HomeScreen> {
             title: title,
           );
         });
+  }
+
+  Widget articleWidgets() {
+    return FutureBuilder(
+        future: InformationService().getArticles(),
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SkeletonArticleCardWidget();
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Terjadi kesalahan"),
+            );
+          }
+
+          var articles = snapshot.data?.obj;
+
+          return ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
+                  ),
+              itemCount: articles?.length ?? 0,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return ArticleCardWidget(article: articles![index]);
+              });
+        }));
   }
 }
