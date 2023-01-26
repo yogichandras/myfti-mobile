@@ -12,18 +12,26 @@ class InformationCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: primaryColor.withOpacity(0.5),
+      color: primaryColor.withOpacity(0.9),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        padding: const EdgeInsets.only(
+          bottom: 20,
+          top: 10,
+          left: 20,
+          right: 20,
+        ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
-                  style: const TextStyle(color: Colors.white, fontSize: 20)),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold)),
               const SizedBox(
                 height: 10,
               ),
@@ -31,9 +39,8 @@ class InformationCardWidget extends StatelessWidget {
                 paragraph,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 11,
+                  fontSize: 14,
                 ),
-                textAlign: TextAlign.justify,
               )
             ],
           ),
