@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:myfti/models/article_model.dart';
 import 'package:myfti/models/banner_model.dart';
 import 'package:myfti/models/base_response_model.dart';
 import 'package:myfti/models/information_model.dart';
@@ -46,6 +47,20 @@ class InformationService extends ClientAdapter {
           response.data,
           (json) => (json as List)
               .map((e) => BannerModel.fromJson(e as Map<String, dynamic>))
+              .toList());
+    } on DioError {
+      rethrow;
+    }
+  }
+
+  Future<BaseResponse<List<ArticleModel>>> getArticles() async {
+    try {
+      final response = await super.sendGetRequest('/artikel');
+
+      return BaseResponse<List<ArticleModel>>.fromJson(
+          response.data,
+          (json) => (json as List)
+              .map((e) => ArticleModel.fromJson(e as Map<String, dynamic>))
               .toList());
     } on DioError {
       rethrow;

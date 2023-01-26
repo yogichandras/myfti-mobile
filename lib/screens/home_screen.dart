@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:myfti/models/article_model.dart';
 import 'package:myfti/models/banner_model.dart';
 import 'package:myfti/models/base_response_model.dart';
 import 'package:myfti/models/information_model.dart';
@@ -136,25 +135,37 @@ class _HomeScreen extends State<HomeScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) => const SizedBox(
-                              height: 10,
-                            ),
-                        itemCount: 2,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return ArticleCardWidget(
-                              article: ArticleModel(
-                            category: "Makrab FTI",
-                            date: "12/12/2020",
-                            description:
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc.",
-                            coverUrl: "assets/images/unibi-cover.png",
-                            id: "1",
-                            place: "Bandung",
-                          ));
-                        })
+                    FutureBuilder(
+                        future: InformationService().getArticles(),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text("Terjadi kesalahan"),
+                            );
+                          }
+
+                          var articles = snapshot.data?.obj;
+
+                          return ListView.separated(
+                              physics: const NeverScrollableScrollPhysics(),
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                              itemCount: articles?.length ?? 0,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return ArticleCardWidget(
+                                    article: articles![index]);
+                              });
+                        })),
                   ],
                 ),
               )

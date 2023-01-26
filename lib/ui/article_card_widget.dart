@@ -18,7 +18,7 @@ class ArticleCardWidget extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(article.coverUrl!),
+                image: NetworkImage(article.coverUrl!),
                 fit: BoxFit.cover,
                 colorFilter: const ColorFilter.mode(
                   Colors.black26,
