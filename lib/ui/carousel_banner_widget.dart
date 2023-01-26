@@ -11,7 +11,7 @@ class CarouselBannerWidget extends StatelessWidget {
     return CarouselSlider.builder(
       options: CarouselOptions(
         height: 200,
-        viewportFraction: 0.8,
+        viewportFraction: 1,
         enlargeCenterPage: true,
         autoPlay: true,
         autoPlayInterval: const Duration(seconds: 3),
