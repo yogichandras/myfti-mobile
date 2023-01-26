@@ -46,18 +46,14 @@ class ClientInterceptors extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
+    print('REQUEST[${options.method}] => PATH: ${options.path}');
+
     var sharedPrefs = await SharedPreferences.getInstance();
     var token = sharedPrefs.getString('token');
 
-    // if (token is String && token.isNotEmpty) {
-    //   options.headers['Authorization'] = 'Bearer $token';
-    // }
-
-    options.headers['Authorization'] =
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmdGkiLCJhdWQiOiJmdGkiLCJpYXQiOjE2NzQ3NjI1NjIsIm5iZiI6MTY3NDc2MjU3MiwiZXhwIjoxNjc0NzY2MTYyLCJkYXRhIjp7ImlkIjoiMSIsInVzZXJuYW1lIjoieW9naWNoYW5kcmFzIiwiZW1haWwiOiJ5b2dpQGdtYWlsLmNvbSIsIm5wbSI6Ijk4ODI0MDUxMTEwMjkiLCJuYW1hIjoiWW9naSBDaGFuZHJhIFNhcHV0cmEiLCJzZW1lc3RlciI6IjUiLCJqdXJ1c2FuIjoiSW5mb3JtYXRpa2EiLCJiaW8iOiJQcm9ncmFtbWVyIiwiZm90byI6Imh0dHBzOi8vZnRpLnZva3JhdGlmLmNvbS9fdGVtcC91cGxvYWRzL2ltZy8yMzAxMjMyMzU2MDVfeW9naS5qcGcifX0.HP7uiujgVYJRzDikTqaOZdYzb5MNCbSq0M0JHc33PlQ";
-    print('REQUEST[${options.method}] => PATH: ${options.path}');
-    print(
-        'TOKEN[${options.headers['Authorization']}] => PATH: ${options.path}');
+    if (token is String && token.isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
     return super.onRequest(options, handler);
   }
 
