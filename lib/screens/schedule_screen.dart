@@ -19,15 +19,17 @@ class _ScheduleScreen extends State<ScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0.0,
-        title: const Text(
-          'Schedule Screen',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: primaryColor,
-      ),
+          elevation: 0.0,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: secondaryColor,
+            ),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/');
+            },
+          )),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
