@@ -1,10 +1,6 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
-import 'package:myfti/utils/colors.dart';
-import 'package:myfti/utils/router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,8 +11,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _username_emailController =
-      TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -26,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(color: Colors.white),
+                decoration: const BoxDecoration(color: Colors.white),
                 child: Column(
                   children: [
                     Image.asset(
@@ -44,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Column(
                             children: <Widget>[
                               CustomTextFormFieldWidget(
-                                  controller: _username_emailController,
+                                  controller: _usernameController,
                                   labelText: 'Username/Email',
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
