@@ -7,7 +7,8 @@ class ScheduleClassService extends ClientAdapter {
   Future<BaseResponse<List<ScheduleClassModel>>> getScheduleClasses(
       {Options? options}) async {
     try {
-      final response = await super.sendGetRequest('/kelas', options);
+      final response = await super
+          .sendGetRequest('/kelas', Options(headers: {'requireToken': 'true'}));
 
       return BaseResponse<List<ScheduleClassModel>>.fromJson(
           response.data,
@@ -16,7 +17,7 @@ class ScheduleClassService extends ClientAdapter {
                   (e) => ScheduleClassModel.fromJson(e as Map<String, dynamic>))
               .toList());
     } on DioError catch (e) {
-      throw BaseResponse<List<ScheduleClassModel>>.fromError(e);
+      throw BaseResponse.fromError(e);
     }
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:myfti/models/schedule_class_model.dart';
 import 'package:myfti/providers/auth_provider.dart';
-import 'package:myfti/services/auth_service.dart';
 import 'package:myfti/ui/class_card_widget.dart';
 import 'package:myfti/ui/profile_information_widget.dart';
 import 'package:myfti/utils/colors.dart';
@@ -23,13 +22,14 @@ class _ProfileScreen extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     double width = MediaQuery.of(context).size.width;
     int widthCard = 170;
 
     int countRow = width ~/ widthCard;
 
     onLogout() async {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final navigator = Navigator.of(context);
 
       await authProvider.removeTokenFromSharedPreferences();
@@ -69,7 +69,7 @@ class _ProfileScreen extends State<ProfileScreen> {
             child: Column(
               children: [
                 FutureBuilder(
-                    future: AuthService().getUserProfile(),
+                    future: authProvider.getUserProfile(),
                     builder: ((context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const SkeletonProfileInformationWidget();

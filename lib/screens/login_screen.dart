@@ -24,10 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final navigator = Navigator.of(context);
 
       if (_formKey.currentState!.validate()) {
-        await authProvider.login(
+        var result = await authProvider.login(
             _usernameController.text, _passwordController.text);
 
-        navigator.pushNamedAndRemoveUntil('/home', (route) => false);
+        Future.delayed(const Duration(seconds: 4), () async {
+          await authProvider.getUserProfile(token: result.obj!.token!);
+        });
+
+        // navigator.pushNamedAndRemoveUntil('/home', (route) => false);
       }
     } on BaseResponse catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

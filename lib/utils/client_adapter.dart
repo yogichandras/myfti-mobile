@@ -6,8 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Dio httpClient = Dio(
   BaseOptions(
-      baseUrl: 'https://api-fti.vokratif.com/index.php/api',
-      receiveTimeout: 1000),
+    baseUrl: 'https://api-fti.vokratif.com/index.php/api',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    sendTimeout: 7000,
+    receiveTimeout: 7000,
+    connectTimeout: 7000,
+  ),
 );
 
 class ClientAdapter extends DioForNative {
@@ -24,6 +31,7 @@ class ClientAdapter extends DioForNative {
     var token = sharedPrefs.getString('token');
 
     httpClient.options.headers['Authorization'] = 'Bearer $token';
+    httpClient.interceptors.add(LogInterceptor());
     httpClient.interceptors.add(ClientInterceptors());
   }
 
@@ -35,8 +43,9 @@ class ClientAdapter extends DioForNative {
     return await httpClient.get<T>(path, options: options);
   }
 
-  Future<Response<T>> sendPostRequest<P, T>(String path, P data) async {
-    return await httpClient.post<T>(path, data: data);
+  Future<Response<T>> sendPostRequest<P, T>(String path, P data,
+      {Options? options}) async {
+    return await httpClient.post<T>(path, data: data, options: options);
   }
 
   Future<Response<T>> sendPutRequest<P, T>(String path, P data) async {
@@ -52,12 +61,36 @@ class ClientInterceptors extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
+    if (options.headers.containsKey('requireToken')) {
+      options.headers.remove('requireToken');
+
+      print("WKWKWKWKWKW");
+
+      var sharedPrefs = await SharedPreferences.getInstance();
+      var token = sharedPrefs.getString('token');
+
+      options.headers.addAll({'Authorization': 'Bearer $token'});
+    }
+
+    return handler.next(options);
+  }
+
+  @override
+  onError(DioError err, ErrorInterceptorHandler handler) async {
+    return super.onError(err, handler);
+  }
+
+  @override
+  onResponse(Response response, ResponseInterceptorHandler handler) {
+    return super.onResponse(response, handler);
+  }
+}
+
+class LogInterceptor extends Interceptor {
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     print('REQUEST[${options.method}] => PATH: ${options.path}');
-
-    var sharedPrefs = await SharedPreferences.getInstance();
-    var token = sharedPrefs.getString('token');
-
-    options.headers.addAll({'Authorization': 'Bearer $token'});
     return handler.next(options);
   }
 

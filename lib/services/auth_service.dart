@@ -26,9 +26,38 @@ class AuthService extends ClientAdapter {
     }
   }
 
+  Future<void> register(Map<String, dynamic> payload) async {
+    try {
+      var formData = FormData.fromMap({
+        'npm': payload['npm'],
+        'nama': payload['nama'],
+        'username': payload['username'],
+        'email': payload['email'],
+        'semester': payload['semester'],
+        'jurusan': payload['jurusan'],
+        'bio': payload['bio'],
+        'foto': await MultipartFile.fromFile(payload['foto']),
+        'password': payload['password'],
+        'confirm_password': payload['confirm_password'],
+      });
+
+      await sendPostRequest('/register', formData,
+          options: Options(
+            contentType: 'multipart/form-data',
+          ));
+    } on DioError catch (e) {
+      throw BaseResponse.fromError(e);
+    }
+  }
+
   Future<BaseResponse<ProfileModel>> getUserProfile({Options? options}) async {
     try {
-      final response = await sendGetRequest('/me', options);
+      final response = await sendGetRequest(
+          '/me',
+          Options(headers: {
+            ...?options?.headers,
+            'requireToken': 'true',
+          }));
 
       BaseResponse<ProfileModel> result = BaseResponse<ProfileModel>.fromJson(
         response.data,
@@ -37,7 +66,8 @@ class AuthService extends ClientAdapter {
 
       return result;
     } on DioError catch (e) {
-      throw BaseResponse<ProfileModel>.fromError(e);
+      throw BaseResponse<Object?>.fromJson(
+          e.response?.data as Map<String, dynamic>, (json) => json);
     }
   }
 }

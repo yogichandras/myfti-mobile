@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:myfti/models/banner_model.dart';
 import 'package:myfti/models/base_response_model.dart';
 import 'package:myfti/models/information_model.dart';
+import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/article_card_widget.dart';
 import 'package:myfti/ui/carousel_banner_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
 import 'package:myfti/utils/colors.dart';
 
 import 'package:myfti/services/information_service.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,13 +43,15 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: Text(
-          'Hi Rizky, Selamat Datang!',
+          'Hi ${authProvider.profile.name}, Selamat Datang!',
           style: TextStyle(
             color: secondaryColor,
           ),
