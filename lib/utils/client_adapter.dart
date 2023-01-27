@@ -4,17 +4,25 @@ import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+getToken() async {
+  var sharedPrefs = await SharedPreferences.getInstance();
+  return sharedPrefs.getString('token');
+}
+
+var options = BaseOptions(
+  baseUrl: 'https://api-fti.vokratif.com/index.php/api',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${getToken()}',
+  },
+  sendTimeout: 7000,
+  receiveTimeout: 7000,
+  contentType: 'application/json',
+);
+
 Dio httpClient = Dio(
-  BaseOptions(
-    baseUrl: 'https://api-fti.vokratif.com/index.php/api',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    sendTimeout: 7000,
-    receiveTimeout: 7000,
-    connectTimeout: 7000,
-  ),
+  options,
 );
 
 class ClientAdapter extends DioForNative {
@@ -26,11 +34,11 @@ class ClientAdapter extends DioForNative {
     init();
   }
 
-  void init() async {
-    var sharedPrefs = await SharedPreferences.getInstance();
-    var token = sharedPrefs.getString('token');
+  void init() {
+    // var sharedPrefs = await SharedPreferences.getInstance();
+    // var token = sharedPrefs.getString('token');
 
-    httpClient.options.headers['Authorization'] = 'Bearer $token';
+    // httpClient.options.headers['Authorization'] = 'Bearer $token';
     httpClient.interceptors.add(LogInterceptor());
     httpClient.interceptors.add(ClientInterceptors());
   }
@@ -40,7 +48,18 @@ class ClientAdapter extends DioForNative {
   }
 
   Future<Response<T>> sendGetRequest<T>(String path, Options? options) async {
-    return await httpClient.get<T>(path, options: options);
+    var sharedPrefs = await SharedPreferences.getInstance();
+    var token = sharedPrefs.getString('token');
+    var bearerToken = 'Bearer $token';
+
+    print("Bearer Token ($path): $bearerToken");
+
+    return await httpClient.get<T>(path,
+        options: Options(
+          headers: {
+            'Authorization': bearerToken,
+          },
+        ));
   }
 
   Future<Response<T>> sendPostRequest<P, T>(String path, P data,
@@ -61,16 +80,14 @@ class ClientInterceptors extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    if (options.headers.containsKey('requireToken')) {
-      options.headers.remove('requireToken');
+    // if (options.headers.containsKey('requireToken')) {
+    //   options.headers.remove('requireToken');
 
-      print("WKWKWKWKWKW");
+    //   var sharedPrefs = await SharedPreferences.getInstance();
+    //   var token = sharedPrefs.getString('token');
 
-      var sharedPrefs = await SharedPreferences.getInstance();
-      var token = sharedPrefs.getString('token');
-
-      options.headers.addAll({'Authorization': 'Bearer $token'});
-    }
+    //   options.headers.addAll({'Authorization': 'Bearer $token'});
+    // }
 
     return handler.next(options);
   }
@@ -91,6 +108,7 @@ class LogInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     print('REQUEST[${options.method}] => PATH: ${options.path}');
+
     return handler.next(options);
   }
 

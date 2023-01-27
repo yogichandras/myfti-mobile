@@ -50,12 +50,11 @@ class AuthService extends ClientAdapter {
     }
   }
 
-  Future<BaseResponse<ProfileModel>> getUserProfile({Options? options}) async {
+  Future<BaseResponse<ProfileModel>> getUserProfile() async {
     try {
       final response = await sendGetRequest(
           '/me',
           Options(headers: {
-            ...?options?.headers,
             'requireToken': 'true',
           }));
 
@@ -66,8 +65,7 @@ class AuthService extends ClientAdapter {
 
       return result;
     } on DioError catch (e) {
-      throw BaseResponse<Object?>.fromJson(
-          e.response?.data as Map<String, dynamic>, (json) => json);
+      throw BaseResponse.fromError(e);
     }
   }
 }

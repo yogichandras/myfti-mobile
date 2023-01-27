@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:myfti/models/base_response_model.dart';
 import 'package:myfti/models/profile_model.dart';
@@ -92,9 +91,8 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<BaseResponse<ProfileModel>> getUserProfile({String? token}) async {
-    var result = await authService.getUserProfile(
-        options: Options(headers: {'requireToken': 'true'}));
+  Future<BaseResponse<ProfileModel>> getUserProfile() async {
+    var result = await authService.getUserProfile();
 
     if (result.success!) {
       await setProfileToSharedPreferences(result.obj!);

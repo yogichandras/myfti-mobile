@@ -12,6 +12,10 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreen extends State<ScheduleScreen> {
+  Future<void> _refetchData() async {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,32 +31,38 @@ class _ScheduleScreen extends State<ScheduleScreen> {
               Navigator.pushReplacementNamed(context, '/');
             },
           )),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: FutureBuilder(
-            future: ScheduleClassService().getScheduleClasses(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+      body: RefreshIndicator(
+        onRefresh: _refetchData,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: FutureBuilder(
+              future: Future.delayed(
+                const Duration(seconds: 3),
+                () => ScheduleClassService().getScheduleClasses(),
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              if (snapshot.hasError) {
-                return const Center(child: Text("Terjadi kesalahan"));
-              }
+                if (snapshot.hasError) {
+                  return const Center(child: Text("Terjadi kesalahan"));
+                }
 
-              var scheduleClasses = snapshot.data!.obj;
+                var scheduleClasses = snapshot.data!.obj;
 
-              return ListView.separated(
-                shrinkWrap: true,
-                itemCount: scheduleClasses!.length,
-                itemBuilder: (_, index) => ScheduleClassCardWidget(
-                  item: scheduleClasses[index],
-                ),
-                separatorBuilder: (_, index) => const SizedBox(
-                  height: 20,
-                ),
-              );
-            }),
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: scheduleClasses!.length,
+                  itemBuilder: (_, index) => ScheduleClassCardWidget(
+                    item: scheduleClasses[index],
+                  ),
+                  separatorBuilder: (_, index) => const SizedBox(
+                    height: 20,
+                  ),
+                );
+              }),
+        ),
       ),
     );
   }

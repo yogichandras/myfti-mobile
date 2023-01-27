@@ -20,6 +20,10 @@ class _ProfileScreen extends State<ProfileScreen> {
     super.initState();
   }
 
+  Future<void> _refetchData() async {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -33,6 +37,7 @@ class _ProfileScreen extends State<ProfileScreen> {
       final navigator = Navigator.of(context);
 
       await authProvider.removeTokenFromSharedPreferences();
+      await authProvider.removeProfileFromSharedPreferences();
 
       navigator.pushReplacementNamed('/login');
     }
@@ -62,55 +67,60 @@ class _ProfileScreen extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
-            child: Column(
-              children: [
-                FutureBuilder(
-                    future: authProvider.getUserProfile(),
-                    builder: ((context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SkeletonProfileInformationWidget();
-                      }
+      body: RefreshIndicator(
+        onRefresh: _refetchData,
+        child: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+              child: Column(
+                children: [
+                  FutureBuilder(
+                      future: authProvider.getUserProfile(),
+                      builder: ((context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SkeletonProfileInformationWidget();
+                        }
 
-                      if (snapshot.hasError) {
-                        return const Text("Terjadi kesalahan");
-                      }
+                        if (snapshot.hasError) {
+                          return const Text("Terjadi kesalahan");
+                        }
 
-                      var profile = snapshot.data?.obj;
+                        var profile = snapshot.data?.obj;
 
-                      return ProfileInformationWidget(
-                        profile: profile,
-                      );
-                    })),
-                Divider(
-                  color: primaryColor,
-                  thickness: 2,
-                  height: 20,
-                ),
-                Text(
-                  "Kelas Anda",
-                  style: TextStyle(fontSize: 20, color: tertiaryColor),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: countRow,
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    _classCardWidget(context),
-                    _classCardWidget1(context),
-                    _classCardWidget2(context),
-                    _classCardWidget3(context),
-                    _classCardWidget4(context),
-                    _classCardWidget5(context),
-                  ],
-                ),
-              ],
+                        return ProfileInformationWidget(
+                          profile: profile,
+                        );
+                      })),
+                  Divider(
+                    color: primaryColor,
+                    thickness: 2,
+                    height: 20,
+                  ),
+                  Text(
+                    "Kelas Anda",
+                    style: TextStyle(fontSize: 20, color: tertiaryColor),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  GridView.count(
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: countRow,
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      _classCardWidget(context),
+                      _classCardWidget1(context),
+                      _classCardWidget2(context),
+                      _classCardWidget3(context),
+                      _classCardWidget4(context),
+                      _classCardWidget5(context),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
