@@ -4,26 +4,26 @@ import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ClientAdapter extends DioForNative {
-  Dio httpClient = Dio(
-    BaseOptions(
+Dio httpClient = Dio(
+  BaseOptions(
       baseUrl: 'https://api-fti.vokratif.com/index.php/api',
-      connectTimeout: 5000,
-      receiveTimeout: 3000,
-    ),
-  );
+      receiveTimeout: 1000),
+);
 
+class ClientAdapter extends DioForNative {
   ClientAdapter([BaseOptions? options]) {
     if (options != null) {
       httpClient.options = options;
     }
 
-    (() async {
-      var sharedPrefs = await SharedPreferences.getInstance();
-      var token = sharedPrefs.getString('token');
-      httpClient.options.headers['Authorization'] = 'Bearer $token';
-    })();
+    init();
+  }
 
+  void init() async {
+    var sharedPrefs = await SharedPreferences.getInstance();
+    var token = sharedPrefs.getString('token');
+
+    httpClient.options.headers['Authorization'] = 'Bearer $token';
     httpClient.interceptors.add(ClientInterceptors());
   }
 
@@ -31,8 +31,8 @@ class ClientAdapter extends DioForNative {
     httpClient.options.headers[key] = value;
   }
 
-  Future<Response<T>> sendGetRequest<T>(String path) async {
-    return await httpClient.get<T>(path);
+  Future<Response<T>> sendGetRequest<T>(String path, Options? options) async {
+    return await httpClient.get<T>(path, options: options);
   }
 
   Future<Response<T>> sendPostRequest<P, T>(String path, P data) async {
@@ -57,7 +57,6 @@ class ClientInterceptors extends Interceptor {
     var sharedPrefs = await SharedPreferences.getInstance();
     var token = sharedPrefs.getString('token');
 
-    print("DEBUG ON REQUEST: $token");
     options.headers.addAll({'Authorization': 'Bearer $token'});
     return handler.next(options);
   }

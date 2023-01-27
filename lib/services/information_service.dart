@@ -6,9 +6,9 @@ import 'package:myfti/models/information_model.dart';
 import 'package:myfti/utils/client_adapter.dart';
 
 class InformationService extends ClientAdapter {
-  Future<BaseResponse<InformationModel>> getVisi() async {
+  Future<BaseResponse<InformationModel>> getVisi({Options? options}) async {
     try {
-      final response = await super.sendGetRequest('/visi');
+      final response = await super.sendGetRequest('/visi', options);
 
       return BaseResponse<InformationModel>.fromJson(response.data,
           (json) => InformationModel.fromJson(json as Map<String, dynamic>));
@@ -17,9 +17,9 @@ class InformationService extends ClientAdapter {
     }
   }
 
-  Future<BaseResponse<InformationModel>> getMisi() async {
+  Future<BaseResponse<InformationModel>> getMisi({Options? options}) async {
     try {
-      final response = await super.sendGetRequest('/misi');
+      final response = await super.sendGetRequest('/misi', options);
 
       return BaseResponse<InformationModel>.fromJson(response.data,
           (json) => InformationModel.fromJson(json as Map<String, dynamic>));
@@ -28,9 +28,9 @@ class InformationService extends ClientAdapter {
     }
   }
 
-  Future<BaseResponse<InformationModel>> getSejarah() async {
+  Future<BaseResponse<InformationModel>> getSejarah({Options? options}) async {
     try {
-      final response = await super.sendGetRequest('/sejarah');
+      final response = await super.sendGetRequest('/sejarah', options);
 
       return BaseResponse<InformationModel>.fromJson(response.data,
           (json) => InformationModel.fromJson(json as Map<String, dynamic>));
@@ -39,9 +39,9 @@ class InformationService extends ClientAdapter {
     }
   }
 
-  Future<BaseResponse<List<BannerModel>>> getBanners() async {
+  Future<BaseResponse<List<BannerModel>>> getBanners({Options? options}) async {
     try {
-      final response = await super.sendGetRequest('/banner');
+      final response = await super.sendGetRequest('/banner', options);
 
       return BaseResponse<List<BannerModel>>.fromJson(
           response.data,
@@ -53,9 +53,10 @@ class InformationService extends ClientAdapter {
     }
   }
 
-  Future<BaseResponse<List<ArticleModel>>> getArticles() async {
+  Future<BaseResponse<List<ArticleModel>>> getArticles(
+      {Options? options}) async {
     try {
-      final response = await super.sendGetRequest('/artikel');
+      final response = await super.sendGetRequest('/artikel', options);
 
       return BaseResponse<List<ArticleModel>>.fromJson(
           response.data,

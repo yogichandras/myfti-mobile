@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await authProvider.login(
             _usernameController.text, _passwordController.text);
 
-        navigator.pushReplacementNamed('/home');
+        navigator.pushNamedAndRemoveUntil('/home', (route) => false);
       }
     } on BaseResponse catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

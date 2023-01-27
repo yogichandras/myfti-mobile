@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:myfti/models/profile_model.dart';
 import 'package:myfti/models/schedule_class_model.dart';
 import 'package:myfti/providers/auth_provider.dart';
+import 'package:myfti/services/auth_service.dart';
 import 'package:myfti/ui/class_card_widget.dart';
 import 'package:myfti/ui/profile_information_widget.dart';
 import 'package:myfti/utils/colors.dart';
@@ -16,6 +16,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreen extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -63,7 +68,23 @@ class _ProfileScreen extends State<ProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
             child: Column(
               children: [
-                _profileInformationWidget(context),
+                FutureBuilder(
+                    future: AuthService().getUserProfile(),
+                    builder: ((context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SkeletonProfileInformationWidget();
+                      }
+
+                      if (snapshot.hasError) {
+                        return const Text("Terjadi kesalahan");
+                      }
+
+                      var profile = snapshot.data?.obj;
+
+                      return ProfileInformationWidget(
+                        profile: profile,
+                      );
+                    })),
                 Divider(
                   color: primaryColor,
                   thickness: 2,
@@ -93,19 +114,6 @@ class _ProfileScreen extends State<ProfileScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _profileInformationWidget(BuildContext context) {
-    return ProfileInformationWidget(
-      profile: ProfileModel(
-        name: "Muhammad Fajar",
-        semester: "3",
-        major: "Teknik Informatika",
-        imageUrl: "assets/images/rizky.png",
-        bio:
-            "HI, IM RIZKY ARDIANSYAH I’M A STUDENT OF UNIBI ON 5TH SEMESTER I LIKE PHOTOGRAPHY, CODING AND DESIGN",
       ),
     );
   }
