@@ -18,6 +18,12 @@ class ClientAdapter extends DioForNative {
       httpClient.options = options;
     }
 
+    (() async {
+      var sharedPrefs = await SharedPreferences.getInstance();
+      var token = sharedPrefs.getString('token');
+      httpClient.options.headers['Authorization'] = 'Bearer $token';
+    })();
+
     httpClient.interceptors.add(ClientInterceptors());
   }
 
@@ -51,14 +57,13 @@ class ClientInterceptors extends Interceptor {
     var sharedPrefs = await SharedPreferences.getInstance();
     var token = sharedPrefs.getString('token');
 
-    if (token is String && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
-    }
-    return super.onRequest(options, handler);
+    print("DEBUG ON REQUEST: $token");
+    options.headers.addAll({'Authorization': 'Bearer $token'});
+    return handler.next(options);
   }
 
   @override
-  onError(DioError err, ErrorInterceptorHandler handler) {
+  onError(DioError err, ErrorInterceptorHandler handler) async {
     print(
         'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
 

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:myfti/models/profile_model.dart';
 import 'package:myfti/models/schedule_class_model.dart';
+import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/class_card_widget.dart';
 import 'package:myfti/ui/profile_information_widget.dart';
 import 'package:myfti/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,15 +16,21 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreen extends State<ProfileScreen> {
-  // final _formKey = GlobalKey<FormState>();
-  // final TextEditingController _controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     int widthCard = 170;
 
     int countRow = width ~/ widthCard;
+
+    onLogout() async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final navigator = Navigator.of(context);
+
+      await authProvider.removeTokenFromSharedPreferences();
+
+      navigator.pushReplacementNamed('/login');
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +53,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               color: secondaryColor,
             ),
             tooltip: 'Logout',
-            onPressed: () {},
+            onPressed: onLogout,
           ),
         ],
       ),

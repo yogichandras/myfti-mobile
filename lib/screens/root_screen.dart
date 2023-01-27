@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:myfti/models/article_model.dart';
+import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/screens/home_screen.dart';
 import 'package:myfti/screens/profile_screen.dart';
 import 'package:myfti/screens/schedule_screen.dart';
+import 'package:myfti/screens/unauthenticated_screen.dart';
 import 'package:myfti/ui/article_card_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
 import 'package:myfti/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -31,6 +34,12 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var authProvider = context.watch<AuthProvider>();
+
+    if (!authProvider.isLogin) {
+      return const UnauthenticatedScreen();
+    }
+
     List<Widget> widgetOptions = [
       const HomeScreen(),
       const ScheduleScreen(),

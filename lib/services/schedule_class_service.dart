@@ -3,10 +3,10 @@ import 'package:myfti/models/base_response_model.dart';
 import 'package:myfti/models/schedule_class_model.dart';
 import 'package:myfti/utils/client_adapter.dart';
 
-class ScheduleClassService extends ClientAdapter {
+class ScheduleClassService {
   Future<BaseResponse<List<ScheduleClassModel>>> getScheduleClasses() async {
     try {
-      final response = await super.sendGetRequest('/kelas');
+      final response = await ClientAdapter().sendGetRequest('/kelas');
 
       return BaseResponse<List<ScheduleClassModel>>.fromJson(
           response.data,
@@ -14,8 +14,8 @@ class ScheduleClassService extends ClientAdapter {
               .map(
                   (e) => ScheduleClassModel.fromJson(e as Map<String, dynamic>))
               .toList());
-    } on DioError {
-      rethrow;
+    } on DioError catch (e) {
+      throw BaseResponse.fromError(e);
     }
   }
 }

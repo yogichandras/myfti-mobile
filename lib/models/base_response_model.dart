@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'base_response_model.g.dart';
@@ -21,4 +22,12 @@ class BaseResponse<T> {
 
   Map<String, dynamic> toJson(Object Function(T value) toJsonT) =>
       _$BaseResponseToJson(this, toJsonT);
+
+  factory BaseResponse.fromError(DioError e) {
+    return BaseResponse(
+      obj: null,
+      success: false,
+      message: e.response?.data['message'] ?? e.message,
+    );
+  }
 }
