@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
+import 'package:myfti/utils/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,26 +18,30 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-            child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(color: Colors.white),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/images/fti-logo.png',
-                      height: 310,
-                      width: 250,
-                      alignment: Alignment.topRight,
-                    ),
-                    Expanded(
-                        child: Container(
-                      padding: const EdgeInsets.all(13.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Column(
+        body: SafeArea(
+      maintainBottomViewPadding: true,
+      child: SingleChildScrollView(
+          child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/images/fti-logo.png',
+                    height: 310,
+                    width: 250,
+                    alignment: Alignment.topRight,
+                  ),
+                  Expanded(
+                      child: Container(
+                    padding: const EdgeInsets.all(13.0),
+                    child: Column(
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: Column(
                             children: <Widget>[
                               CustomTextFormFieldWidget(
                                   controller: _usernameController,
@@ -47,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                     return null;
                                   }),
+                              const SizedBox(height: 10.0),
                               CustomTextFormFieldWidget(
                                   controller: _passwordController,
                                   labelText: "Password",
@@ -68,14 +74,50 @@ class _LoginScreenState extends State<LoginScreen> {
                                       );
                                     }
                                   }),
-                              const Text('Lupa Password?'),
-                              const Text('Belum punya akun myfti? register'),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Belum punya akun myfti?',
+                                        style: TextStyle(
+                                          color: tertiaryColor,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context)
+                                              .pushNamed('/register');
+                                        },
+                                        child: const Text(
+                                          'Register',
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                             ],
-                          )
-                        ],
-                      ),
-                    ))
-                  ],
-                ))));
+                          ),
+                        )
+                      ],
+                    ),
+                  ))
+                ],
+              ))),
+    ));
   }
 }
