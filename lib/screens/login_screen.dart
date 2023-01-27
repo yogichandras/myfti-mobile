@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:myfti/models/base_response_model.dart';
+import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
 import 'package:myfti/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,8 +18,41 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  onLogin() async {
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final navigator = Navigator.of(context);
+
+      var username = _usernameController.text;
+      var password = _passwordController.text;
+
+      if (_formKey.currentState!.validate()) {
+        await authProvider.login(username, password);
+        // await authProvider.getUserProfile();
+
+        Future.delayed(const Duration(seconds: 3), () async {
+          return await authProvider.getUserProfile();
+        });
+
+        navigator.pushNamedAndRemoveUntil('/home', (route) => false);
+      }
+    } on BaseResponse catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.message ?? e.toString()),
+      ));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    print("Login Screen ${authProvider.isLogin}");
+
     return Scaffold(
         body: SafeArea(
       maintainBottomViewPadding: true,
@@ -56,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               CustomTextFormFieldWidget(
                                   controller: _passwordController,
                                   labelText: "Password",
+                                  obscureText: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter some text';
@@ -65,15 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(height: 20.0),
                               CustomButtonWidget(
                                   text: "Login".toUpperCase(),
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Processing Data')),
-                                      );
-                                    }
-                                  }),
+                                  onPressed: onLogin),
                               const SizedBox(
                                 height: 20,
                               ),

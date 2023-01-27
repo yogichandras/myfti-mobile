@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myfti/models/base_response_model.dart';
+import 'package:myfti/services/auth_service.dart';
 import 'package:myfti/ui/custom_button_widget.dart';
 import 'package:myfti/ui/custom_input_field_widget.dart';
 import 'package:myfti/ui/custom_input_file_field_widget.dart';
@@ -14,18 +16,64 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  bool _isLoading = false;
+
+  final Map<String, dynamic> _formData = {
+    'npm': '',
+    'nama': '',
+    'username': '',
+    'email': '',
+    'semester': '',
+    'jurusan': '',
+    'bio': '',
+    'foto': '',
+    'password': '',
+    'confirm_password': '',
+  };
+
   @override
   void initState() {
     super.initState();
   }
 
-  onRegister() {
-    if (_formKey.currentState!.validate()) {
-      // If the form is valid, display a Snackbar.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
+  _onRegister() async {
+    var snackbar = ScaffoldMessenger.of(context);
+    var navigator = Navigator.of(context);
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      if (_formKey.currentState!.validate()) {
+        final AuthService authService = AuthService();
+        await authService.register(_formData);
+
+        snackbar.showSnackBar(
+          const SnackBar(
+            content: Text('Register berhasil'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        navigator.pushReplacementNamed('/login');
+      }
+    } on BaseResponse catch (e) {
+      snackbar.showSnackBar(
+        SnackBar(
+          content: Text(e.message.toString()),
+          backgroundColor: Colors.red,
+        ),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  _onChanged(String field, String value) {
+    setState(() {
+      _formData[field] = value;
+    });
   }
 
   @override
@@ -66,23 +114,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       return null;
                     },
+                    onChanged: (p0) {
+                      _onChanged('npm', p0);
+                    },
                   ),
                   CustomTextFormFieldWidget(
                     labelText: 'Nama',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi nama';
                       }
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('nama', p0);
                     },
                   ),
                   CustomTextFormFieldWidget(
                     labelText: 'Username',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi username';
                       }
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('username', p0);
                     },
                   ),
                   const SizedBox(height: 10.0),
@@ -90,14 +147,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'Email',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi email';
                       }
 
                       if (!value.contains('@')) {
-                        return 'Please enter a valid email';
+                        return 'Format email tidak valid';
                       }
 
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('email', p0);
                     },
                   ),
                   const SizedBox(height: 10.0),
@@ -105,10 +165,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'Semester',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi semester';
                       }
 
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('semester', p0);
                     },
                   ),
                   const SizedBox(height: 10.0),
@@ -116,10 +179,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'Jurusan',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi Jurusan';
                       }
 
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('jurusan', p0);
                     },
                   ),
                   const SizedBox(height: 10.0),
@@ -127,10 +193,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'Bio',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi bio';
                       }
 
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('bio', p0);
                     },
                   ),
                   const SizedBox(height: 10.0),
@@ -139,14 +208,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi konfirmasi password';
                       }
 
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return 'Password minimal 6 karakter';
                       }
 
                       return null;
+                    },
+                    onChanged: (p0) {
+                      _onChanged('password', p0);
                     },
                   ),
                   const SizedBox(height: 10.0),
@@ -155,11 +227,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Mohon isi konfirmasi password';
                       }
 
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return 'Password minimal 6 karakter';
+                      }
+
+                      if (value != _formData['password']) {
+                        return 'Password tidak sama';
                       }
 
                       return null;
@@ -167,6 +243,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20.0),
                   CustomInputFileFieldWidget(
+                    onSaved: (p0) {
+                      _onChanged('foto', p0!.path);
+                    },
                     validator: (p0) {
                       if (p0 == null) {
                         return 'Mohon isi foto profil';
@@ -176,10 +255,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),
                   const SizedBox(height: 20.0),
-                  CustomButtonWidget(
-                    text: 'Register',
-                    onPressed: onRegister,
-                  ),
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : CustomButtonWidget(
+                          text: 'Register',
+                          onPressed: _onRegister,
+                        ),
                 ],
               )),
         ),

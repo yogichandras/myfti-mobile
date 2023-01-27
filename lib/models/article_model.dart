@@ -1,9 +1,19 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'article_model.g.dart';
+
+@JsonSerializable()
 class ArticleModel {
   final String? id;
   final String? date;
   final String? category;
+
+  @JsonKey(name: 'tempat')
   final String? place;
+
+  @JsonKey(name: 'foto')
   final String? coverUrl;
+
   final String? description;
 
   ArticleModel({
@@ -15,43 +25,8 @@ class ArticleModel {
     this.description,
   });
 
-  factory ArticleModel.fromDTO(ArticleDTO dto) {
-    return ArticleModel(
-      id: dto.id,
-      date: dto.date,
-      category: dto.category,
-      place: dto.tempat,
-      coverUrl: dto.foto,
-      description: dto.description,
-    );
-  }
-}
+  factory ArticleModel.fromJson(Map<String, dynamic> json) =>
+      _$ArticleModelFromJson(json);
 
-class ArticleDTO {
-  final String? id;
-  final String? date;
-  final String? category;
-  final String? tempat;
-  final String? foto;
-  final String? description;
-
-  ArticleDTO({
-    this.id,
-    this.date,
-    this.category,
-    this.tempat,
-    this.foto,
-    this.description,
-  });
-
-  factory ArticleDTO.fromJson(Map<String, dynamic> json) {
-    return ArticleDTO(
-      id: json['id'],
-      date: json['date'],
-      category: json['category'],
-      tempat: json['tempat'],
-      foto: json['foto'],
-      description: json['description'],
-    );
-  }
+  Map<String, dynamic> toJson() => _$ArticleModelToJson(this);
 }
