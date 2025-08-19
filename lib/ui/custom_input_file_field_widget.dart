@@ -44,6 +44,8 @@ class _CustomInputFileFieldWidgetState
           formFieldState.didChange(File(image.path));
           formFieldState.save();
 
+          widget.onSaved!(File(image.path));
+
           setState(() {
             _image = File(image.path);
           });

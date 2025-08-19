@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:myfti/models/article_model.dart';
+import 'package:myfti/models/banner_model.dart';
+import 'package:myfti/models/base_response_model.dart';
+import 'package:myfti/models/information_model.dart';
+import 'package:myfti/providers/auth_provider.dart';
 import 'package:myfti/ui/article_card_widget.dart';
 import 'package:myfti/ui/carousel_banner_widget.dart';
 import 'package:myfti/ui/information_card_widget.dart';
 import 'package:myfti/utils/colors.dart';
+
+import 'package:myfti/services/information_service.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,15 +20,38 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  List<String> mapBannerListToListString(
+      BaseResponse<List<BannerModel>>? response) {
+    if (response == null) {
+      return [];
+    }
+
+    return response.obj!
+        .map((e) => "https://fti.vokratif.com/_temp/uploads/img/${e.image!}")
+        .toList();
+  }
+
+  refetchData() async {
+    // NOTES: This is just a trigger to rebuild the widget or re-fetch the data
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: Text(
-          'Hi Rizky, Selamat Datang!',
+          'Hi ${authProvider.profile.name}, Selamat Datang!',
           style: TextStyle(
             color: secondaryColor,
           ),
@@ -38,98 +67,55 @@ class _HomeScreen extends State<HomeScreen> {
           ),
         ],
       ),
-      // body: SingleChildScrollView(
-      //   physics: const ScrollPhysics(),
-      //   child: Padding(
-      //     padding: const EdgeInsets.symmetric(horizontal: 20),
-      //     child: Column(
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: [
-      //         // _backgroundCardWidget(context),
-      //         // const SizedBox(
-      //         //   height: 20,
-      //         // ),
-      //         GridView.count(
-      //           physics: const NeverScrollableScrollPhysics(),
-      //           crossAxisCount: 2,
-      //           shrinkWrap: true,
-      //           mainAxisSpacing: 2,
-      //           children: [
-      //             _sejarahCardWidget(context),
-      //             _visiCardWidget(context),
-      //             _misiCardWidget(context),
-      //           ],
-      //         ),
-      //         Divider(
-      //           color: primaryColor,
-      //           height: 40,
-      //           thickness: 2,
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+      body: RefreshIndicator(
+        onRefresh: () => refetchData(),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // TODO: Carousel Banner
-              const CarouselBannerWidget(
-                images: [
-                  'assets/images/unibi-logo.png',
-                  'assets/images/unibi-cover.png',
-                  'assets/images/fti-logo.png',
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                children: [
-                  _sejarahCardWidget(context),
-                  _visiCardWidget(context),
-                  _misiCardWidget(context),
-                ],
-              ),
-              Divider(
-                color: primaryColor,
-                height: 40,
-                thickness: 2,
-              ),
-
-              const Text(
-                "Artikel",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) => const SizedBox(
-                        height: 10,
+              carouselBannerWidget(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GridView.count(
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      children: [
+                        informationCardWidget(
+                            future: InformationService().getSejarah(),
+                            title: "Sejarah"),
+                        informationCardWidget(
+                            future: InformationService().getVisi(),
+                            title: "Visi"),
+                        informationCardWidget(
+                            future: InformationService().getMisi(),
+                            title: "Misi"),
+                      ],
+                    ),
+                    Divider(
+                      color: primaryColor,
+                      height: 40,
+                      thickness: 2,
+                    ),
+                    const Text(
+                      "Artikel",
+                      style: TextStyle(
+                        fontSize: 20,
                       ),
-                  itemCount: 2,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ArticleCardWidget(
-                        article: ArticleModel(
-                      category: "Makrab FTI",
-                      date: "12/12/2020",
-                      description:
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc.",
-                      coverUrl: "assets/images/unibi-cover.png",
-                      id: "1",
-                      place: "Bandung",
-                    ));
-                  })
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    articleWidgets(),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -137,27 +123,73 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  Widget _sejarahCardWidget(BuildContext context) {
-    return const InformationCardWidget(
-      paragraph:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc.",
-      title: "Sejarah",
-    );
+  Widget carouselBannerWidget() {
+    return FutureBuilder(
+        future: InformationService().getBanners(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: SkeletonCarouselWidget(),
+            );
+          }
+
+          List<String> images = mapBannerListToListString(snapshot.data);
+
+          return CarouselBannerWidget(
+            images: images,
+          );
+        });
   }
 
-  Widget _visiCardWidget(BuildContext context) {
-    return const InformationCardWidget(
-      paragraph:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. ",
-      title: "Visi",
-    );
+  Widget informationCardWidget(
+      {required Future<BaseResponse<InformationModel>>? future,
+      required String title}) {
+    return FutureBuilder(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SkeletonInformationCardWidget();
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Terjadi kesalahan"),
+            );
+          }
+
+          return InformationCardWidget(
+            paragraph: snapshot.data?.obj?.description ?? "",
+            title: title,
+          );
+        });
   }
 
-  Widget _misiCardWidget(BuildContext context) {
-    return const InformationCardWidget(
-      paragraph:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc. Sed euismod, nunc sit amet aliquam luctus, nisi nunc aliquam massa, nec aliquam nunc nisl sit amet nunc.",
-      title: "Misi",
-    );
+  Widget articleWidgets() {
+    return FutureBuilder(
+        future: InformationService().getArticles(),
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SkeletonArticleCardWidget();
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Terjadi kesalahan"),
+            );
+          }
+
+          var articles = snapshot.data?.obj;
+
+          return ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
+                  ),
+              itemCount: articles?.length ?? 0,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return ArticleCardWidget(article: articles![index]);
+              });
+        }));
   }
 }

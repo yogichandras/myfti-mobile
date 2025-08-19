@@ -1,12 +1,27 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'profile_model.g.dart';
+
+@JsonSerializable()
 class ProfileModel {
   final String? id;
+
+  @JsonKey(name: "nama")
   final String? name;
+
   final String? semester;
+
+  @JsonKey(name: "jurusan")
   final String? major;
+
   final String? bio;
   final String? username;
   final String? email;
+
+  @JsonKey(name: "npm")
   final String? identityNumber;
+
+  @JsonKey(name: "foto")
   final String? imageUrl;
 
   ProfileModel({
@@ -21,55 +36,8 @@ class ProfileModel {
     this.imageUrl,
   });
 
-  factory ProfileModel.fromDTO(ProfileDTO dto) {
-    return ProfileModel(
-      id: dto.id,
-      name: dto.nama,
-      semester: dto.semester,
-      major: dto.jurusan,
-      bio: dto.bio,
-      username: dto.username,
-      email: dto.email,
-      identityNumber: dto.npm,
-      imageUrl: dto.foto,
-    );
-  }
-}
+  factory ProfileModel.fromJson(Map<String, dynamic> json) =>
+      _$ProfileModelFromJson(json);
 
-class ProfileDTO {
-  final String? id;
-  final String? nama;
-  final String? semester;
-  final String? jurusan;
-  final String? bio;
-  final String? username;
-  final String? email;
-  final String? npm;
-  final String? foto;
-
-  ProfileDTO({
-    this.id,
-    this.nama,
-    this.semester,
-    this.jurusan,
-    this.bio,
-    this.username,
-    this.email,
-    this.npm,
-    this.foto,
-  });
-
-  factory ProfileDTO.fromJson(Map<String, dynamic> json) {
-    return ProfileDTO(
-      id: json['id'],
-      nama: json['nama'],
-      semester: json['semester'],
-      jurusan: json['jurusan'],
-      bio: json['bio'],
-      username: json['username'],
-      email: json['email'],
-      npm: json['npm'],
-      foto: json['foto'],
-    );
-  }
+  Map<String, dynamic> toJson() => _$ProfileModelToJson(this);
 }
